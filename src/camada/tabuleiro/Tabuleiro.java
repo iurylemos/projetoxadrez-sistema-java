@@ -10,6 +10,15 @@ public class Tabuleiro {
 	private Peca[][] pecas;
 	
 	public Tabuleiro(int linhas, int colunas) {
+		/*
+		 * Programação defensiva
+		 * Exemplo não faz sentindo as minhas linhas
+		 * e colunas serem menor do que 1
+		 * estão se forem, os dados são invalidos
+		 */
+		if(linhas < 1 || colunas < 1) {
+			throw new ExcecaoTabuleiro("Erro criando tabuleiro: é necessário que haja pelo menos 1 linha e 1 coluna. ");
+		}
 		this.linhas = linhas;
 		this.colunas = colunas;
 	//Inserindo o numero de linhas e colunas na matriz
@@ -24,20 +33,27 @@ public class Tabuleiro {
 	public int getLinhas() {
 		return linhas;
 	}
-
-	public void setLinhas(int linhas) {
-		this.linhas = linhas;
-	}
-
+	/*
+	 * Retirei o set de linhas e colunas
+	 * pois não tem sentindo, uma vez criado o tabuleiro
+	 * ser realizado a mudança no tamanho.
+	 */
 	public int getColunas() {
 		return colunas;
 	}
 
-	public void setColunas(int colunas) {
-		this.colunas = colunas;
-	}
 	
 	public Peca peca(int linha, int coluna) {
+		/*
+		 * Programação defensiva:
+		 * SE essa POSIÇÃO não EXISTE (!)
+		 * eu vou lançar uma nova excessão
+		 */
+		if(!posicaoExiste(linha, coluna)) {
+			throw new ExcecaoTabuleiro("Posicao não existe no tabuleiro");
+		}
+		
+		
 		/*
 		 * Esse metodo me retorna a matriz
 		 * na linha e coluna
@@ -51,10 +67,31 @@ public class Tabuleiro {
 	 */
 	
 	public Peca peca(Posicao posicao) {
+		/*
+		 * Programação defensiva:
+		 * SE essa POSIÇÃO não EXISTE (!)
+		 * eu vou lançar uma excessão
+		 */
+		if(!posicaoExiste(posicao)) {
+			throw new ExcecaoTabuleiro("Essa posição não existe no tabuleiro");
+		}
+		
 		return pecas[posicao.getLinha()][posicao.getColuna()];
 	}
 	
 	public void colocarPeca(Peca peca, Posicao posicao) {
+		/*
+		 * Programação defensiva:
+		 * Antes de colocar uma peça na posição, 
+		 * eu tenho que verificar se já existe uma
+		 * peça na posição.
+		 */
+		if(temUmaPecaNaPosicao(posicao)) {
+			throw new ExcecaoTabuleiro("Já existe uma peça nessa posição do tabuleiro " +posicao);
+		}
+		
+		
+		
 		/*
 		 * Este metodo vai ter que ir na matriz de PECAS
 		 * do meu TABULEIRO que está no construtor 
@@ -77,7 +114,51 @@ public class Tabuleiro {
 		peca.posicao = posicao;
 	}
 	
+	/*
+	 * Criando um metodo auxiliar para posicaoExiste
+	 * Por que estou fazendo isso?
+	 * Por que aqui dentro da classe vai ter um momento
+	 * que vai ser mais fácil testar pela linha e coluna
+	 * do que pela posição.
+	 */
+	private boolean posicaoExiste(int linha, int coluna) {
+		/*
+		 * Quando uma posição existe?
+		 * Quando essa linha ou coluna estiver no tabuleiro
+		 * Ou seja quando a linha for maior que ZERO
+		 * e quando a linha for menor que as linhas existentes
+		 */
+		return linha >= 0 && linha < linhas && coluna >= 0 && coluna < colunas;
+		
+	}
 	
+	
+	
+	public boolean posicaoExiste(Posicao posicao) {
+		/*
+		 * E aqui eu faço do mesmo jeito
+		 * aproveitando o metodo auxiliar
+		 */
+		return posicaoExiste(posicao.getLinha(), posicao.getColuna());
+	}
+	
+	public boolean temUmaPecaNaPosicao(Posicao posicao) {
+		/*
+		 * Antes de testar se tem uma peca na posição
+		 * é importante verificar se essa posição existe
+		 */
+		if(!posicaoExiste(posicao)) {
+			throw new ExcecaoTabuleiro("Essa posição não existe no tabuleiro");
+		}
+		/*
+		 * Lembrando que essa peca(posicao) é um metodo
+		 * que contem pecas que estão na posição
+		 * do getLinha e posicao getColuna
+		 * Estão se essa peca for diferente de nulo
+		 * tem uma peca nessa posição
+		 */
+		return peca(posicao) != null;
+	}
 
 	
 }
