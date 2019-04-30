@@ -54,6 +54,29 @@ public class Tabuleiro {
 		return pecas[posicao.getLinha()][posicao.getColuna()];
 	}
 	
+	public void colocarPeca(Peca peca, Posicao posicao) {
+		/*
+		 * Este metodo vai ter que ir na matriz de PECAS
+		 * do meu TABULEIRO que está no construtor 
+		 * na linha .getLinha()
+		 * e na coluna .getColuna
+		 * e atribuir a essa posição da matriz de peça
+		 * a peça que veio aqui no parametro
+		 */
+		pecas[posicao.getLinha()][posicao.getColuna()] = peca;
+		/*
+		 * E vou ter que falar aqui abaixo, que essa peça 
+		 * não está mais na posição nula, ela está na 
+		 * posição que veio no parametro
+		 * 
+		 * E eu posso colocar ela assim diretamente
+		 * pois a posição na classe Peca é protected
+		 * ou seja pode ser acessada pelo mesmo pacote
+		 * ou por uma sub classe
+		 */
+		peca.posicao = posicao;
+	}
+	
 	
 
 	

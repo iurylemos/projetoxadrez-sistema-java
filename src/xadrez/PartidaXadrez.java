@@ -1,6 +1,9 @@
 package xadrez;
 
+import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
+import xadrez.pecas.Rei;
+import xadrez.pecas.Torre;
 
 public class PartidaXadrez {
 	/*
@@ -19,8 +22,12 @@ public class PartidaXadrez {
 		 * Quem tem que saber a dimensão de um
 		 * tabuleiro de xadrez
 		 * É a classe PartidaXadrez.
+		 * Então quando começar a partida
+		 * eu crio um tabuleiro 8,8
+		 * e chamo o metodo iniciarPartida()
 		 */
 		tabuleiro = new Tabuleiro(8, 8);
+		iniciarPartida();
 	}
 	
 	public PecaXadrez[][] getPecas() {
@@ -75,6 +82,24 @@ public class PartidaXadrez {
 			}
 		}
 		return mat;
+	}
+	
+	/*
+	 * Este metodo vai ser responsável por iniciar a
+	 * partida de Xadrez.
+	 * 
+	 * na variavel tabuleiro, vou chamar o metodo colocarPeca
+	 * E dentro dos parametro vou instanciar a Torre
+	 * no primeiro parametro eu digo que está se referenciando ao TABULEIRO
+	 * e na outra eu digo a COR e a posição eu crio
+	 * instanciando a classe Posicao e passando o parametro
+	 * vou colocar esse metodo aqui no construtor do PartidaXadrez
+	 */
+	
+	private void iniciarPartida() {
+		tabuleiro.colocarPeca(new Torre(tabuleiro, Color.WHITE), new Posicao(2,1));
+		tabuleiro.colocarPeca(new Rei(tabuleiro, Color.BLACK), new Posicao(0, 4));
+		tabuleiro.colocarPeca(new Rei(tabuleiro, Color.WHITE), new Posicao(7, 4));
 	}
 	
 	
