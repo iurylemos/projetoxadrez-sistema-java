@@ -37,6 +37,23 @@ public class Tabuleiro {
 		this.colunas = colunas;
 	}
 	
+	public Peca peca(int linha, int coluna) {
+		/*
+		 * Esse metodo me retorna a matriz
+		 * na linha e coluna
+		 */
+		return pecas[linha][coluna];
+	}
+	/*
+	 * Vou realizar uma sobrecarga
+	 * Só que agora vai me retornar o POSICAO
+	 * da classe POSICAO puxando as linhas e colunas
+	 */
+	
+	public Peca peca(Posicao posicao) {
+		return pecas[posicao.getLinha()][posicao.getColuna()];
+	}
+	
 	
 
 	
