@@ -131,6 +131,50 @@ public class Tabuleiro {
 		return linha >= 0 && linha < linhas && coluna >= 0 && coluna < colunas;
 		
 	}
+	/*
+	 * Criando o metodo removerPeca
+	 * retornando uma Peca
+	 */
+	
+	public Peca removaPeca(Posicao posicao) {
+		/*
+		 * Programação defensiva:
+		 * SE ESSA POSICAO QUE EU PASSEI NO PARAMETRO
+		 * NÃO EXISTE, EU VOU LANÇAR UMA EXCESSÃO
+		 */
+		if(!posicaoExiste(posicao)) {
+			throw new ExcecaoTabuleiro("Essa posição não existe no tabuleiro");
+		}
+		/*
+		 * Primeira coisa que vou testar aqui
+		 * É que se essa peca do tabuleiro
+		 * nessa posição for igual a nulo
+		 * se isso for verdade é por que não
+		 * tem nenhuma peca nessa posição.
+		 */
+		if(peca(posicao) == null) {
+			return null;
+		}
+		/*
+		 * Se nenhuma das outra condições for verdade
+		 * agora vou remover a peça.
+		 * Vou criar uma variavel AUXILIAR
+		 * que recebe a peca do tabuleiro nessa posicao
+		 * e dizer que ela é nula, ou seja estou removendo.
+		 * 
+		 */
+		Peca aux = peca(posicao);
+		aux.posicao = null;
+		/*
+		 * Vou acessar a matriz pecas
+		 * E ir até a posicao que está essa variavel
+		 * que veio no parametro e dizer que ela é nula
+		 * Feito isso vou retornar a variavel auxiliar
+		 * que contém a peça que foi retirada
+		 */
+		pecas[posicao.getLinha()][posicao.getColuna()] = null;
+		return aux;
+	}
 	
 	
 	
@@ -160,5 +204,8 @@ public class Tabuleiro {
 		return peca(posicao) != null;
 	}
 
+	/*
+	 * 
+	 */
 	
 }

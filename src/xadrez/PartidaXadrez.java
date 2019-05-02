@@ -1,5 +1,7 @@
 package xadrez;
 
+import camada.tabuleiro.Peca;
+import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
 import xadrez.pecas.Rei;
 import xadrez.pecas.Torre;
@@ -83,6 +85,66 @@ public class PartidaXadrez {
 		return mat;
 	}
 	
+	
+	
+	public PecaXadrez executarMovimentoXadrez(XadrezPosicao posicaoOrigem, XadrezPosicao posicaoDestino) {
+		/*
+		 * Primeiro eu vou converter essas duas Posições
+		 * para as posições da MATRIZ
+		 */
+		Posicao origem = posicaoOrigem.toPosicao();
+		Posicao destino = posicaoDestino.toPosicao();
+		/*
+		 * Antes de realizar o movimento eu preciso
+		 * validar se nessa posição havia uma peça
+		 * Essa operação vai ser responsável por validar
+		 * essa posição de origem
+		 * Se não existir, esse metodo vai lançar uma excessão
+		 */
+		validarPosicaoOrigem(origem);
+		Peca capturarPeca = fazerMovimento(origem, destino);
+		
+		/*Agora vou retornar a peça capturada. 
+		 * Vou ter que dar um downcasting antes
+		 * Por que?
+		 * Por que essa peça capturada era do tipo Peca
+		 * E estou convertendo para PecaXadrez  */
+		return (PecaXadrez)capturarPeca;
+	}
+	
+	private void validarPosicaoOrigem(Posicao posicao) {
+		/*
+		 * Se não existir uma peça no tabueleiro
+		 * nessa posição, lanço a excesão
+		 */
+		if(!tabuleiro.temUmaPecaNaPosicao(posicao)) {
+			throw new XadrezException("Não existe peça na posição de origem.");
+		}
+	}
+	
+	
+	private Peca fazerMovimento(Posicao origem, Posicao destino) {
+		/*
+		 * Implementar a lógica de realizar o movimento.
+		 */
+		Peca peca = tabuleiro.removaPeca(origem);
+		/*
+		 * Agora eu vou declarar uma outra peça
+		 * que vai ser a pecaCapturada
+		 * e remover ela do Destino.
+		 */
+		Peca capturarPeca = tabuleiro.removaPeca(destino);
+		/*
+		 * Colocando a peça de origem na peça de destino.
+		 */
+		tabuleiro.colocarPeca(peca, destino);
+		return capturarPeca;
+	}
+	
+	
+	
+	
+	private void colocarNovaPeca(char coluna, int linha, PecaXadrez peca) {
 	/*
 	 * Esse metodo coloqueNovaPeca
 	 * Vai receber as coordenadas do xadrez
@@ -94,8 +156,6 @@ public class PartidaXadrez {
 	 * do xadrez, e não do sistema da matriz.
 	 * Pois fica confuso.
 	 */
-	
-	private void colocarNovaPeca(char coluna, int linha, PecaXadrez peca) {
 	/*
 	 * esse metodo vai chamar o TABULEIRO
 	 * e chamar o metodo colocarPeca

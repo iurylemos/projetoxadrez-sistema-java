@@ -1,7 +1,11 @@
 package aplicacao;
 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 import xadrez.Color;
 import xadrez.PecaXadrez;
+import xadrez.XadrezPosicao;
 
 public class UI {
 	/*
@@ -30,6 +34,50 @@ public class UI {
 	public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
 	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
+	
+	/*
+	 * Ler a Posicao
+	 * vou criar um metodo
+	 * da classe XadrezPosicao
+	 * E vou passar como parametro o Scanner
+	 * Que vai ser instanciado na Principal
+	 * E eu vou receber ele aqui como argumento
+	 * E vou fazer a leitura da minha posição
+	 * através do Scanner
+	 */
+	public static XadrezPosicao lerXadrezPosicao(Scanner sc) {
+		/*
+		 * Para evitar qualquer erro de formato
+		 * Eu vou colocar tudo isso dentro do bloco try
+		 * E qualquer erro que acontecer vai cair no catch
+		 */
+		try {
+		String s = sc.nextLine();
+		/*
+		 * Por que charAt 0? 
+		 * Por que a coluna é a primeira posicao
+		 * da minha String
+		 */
+		char coluna = s.charAt(0);
+		/*
+		 * Para receber a linha, eu vou ter que recortar
+		 * o String a partir da posição 1
+		 * E converter o resultado para inteiro
+		 */
+		int linha = Integer.parseInt(s.substring(1));
+		return new XadrezPosicao(coluna, linha);
+		} catch (RuntimeException e) {
+			/*
+			 * Vou lançar essa excessão
+			 * que significa qualquer erro
+			 * de entrada de dados.
+			 */
+			throw new InputMismatchException("Erro lendo XadrezPosicao. Os valores válidos são de a1 até h8");
+		}
+	}
+	
+	
+	
 	public static void imprimaTabuleiro(PecaXadrez[][] pecas) {
 		/*
 		 * Imprimindo os tracinhos dizendo qual o valor de cada linha e coluna
