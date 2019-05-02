@@ -1,6 +1,5 @@
 package xadrez;
 
-import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
 import xadrez.pecas.Rei;
 import xadrez.pecas.Torre;
@@ -85,6 +84,41 @@ public class PartidaXadrez {
 	}
 	
 	/*
+	 * Esse metodo coloqueNovaPeca
+	 * Vai receber as coordenadas do xadrez
+	 * Nos parametro recebe a coluna, e a linha
+	 * e recebe a PecaXadrez
+	 * Vou atribuir o toPosicao aqui 
+	 * Para que a gente possa: instanciar as peças 
+	 * de xadrez, informando as coordenadas do sistema
+	 * do xadrez, e não do sistema da matriz.
+	 * Pois fica confuso.
+	 */
+	
+	private void colocarNovaPeca(char coluna, int linha, PecaXadrez peca) {
+	/*
+	 * esse metodo vai chamar o TABULEIRO
+	 * e chamar o metodo colocarPeca
+	 * passando a peca, e instanciando
+	 * o XadrezPosicao com os dados que recebi no parametro
+	 * e para converter isso para a posição de MATRIZ
+	 * vou utilizar o toPosicao
+	 * 
+	 * Então agora eu tenho a operação de colocar peça
+	 * Passando a posição nas coordenada do xadrez
+	 * que está vindo no parametro
+		 */
+		tabuleiro.colocarPeca(peca, new XadrezPosicao(coluna, linha).toPosicao());
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	/*
 	 * Este metodo vai ser responsável por iniciar a
 	 * partida de Xadrez.
 	 * 
@@ -97,9 +131,14 @@ public class PartidaXadrez {
 	 */
 	
 	private void iniciarPartida() {
-		tabuleiro.colocarPeca(new Torre(tabuleiro, Color.WHITE), new Posicao(2,1));
-		tabuleiro.colocarPeca(new Rei(tabuleiro, Color.BLACK), new Posicao(0, 4));
-		tabuleiro.colocarPeca(new Rei(tabuleiro, Color.WHITE), new Posicao(7, 4));
+		/*
+		 * No lugar de ser assim:
+		 *  tabuleiro.colocarPeca(new Torre(tabuleiro, Color.WHITE), new Posicao(2,1));
+		 * eu agora vou atribuir a 'coluna' e a posição 6.  */
+		colocarNovaPeca('b',6, new Torre(tabuleiro, Color.WHITE));
+		//Coloca para min, na posição E8, um novo REI
+		colocarNovaPeca('e', 8, new Rei(tabuleiro, Color.BLACK));
+		colocarNovaPeca('e', 1, new Rei(tabuleiro, Color.WHITE));
 	}
 	
 	
