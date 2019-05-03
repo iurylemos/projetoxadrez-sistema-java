@@ -34,18 +34,29 @@ public class UI {
 	public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
 	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
-	
 	/*
-	 * Ler a Posicao
-	 * vou criar um metodo
-	 * da classe XadrezPosicao
-	 * E vou passar como parametro o Scanner
-	 * Que vai ser instanciado na Principal
-	 * E eu vou receber ele aqui como argumento
-	 * E vou fazer a leitura da minha posição
-	 * através do Scanner
+	 * Vou criar um metodo para limpar a tela
+	 * Depois que eu inserir os dados da origem e destino
+	 * mostre o resultado, e depois limpe a tela
 	 */
+//https://stackoverflow.com/questions/2979383/java-clear-the-console
+	public static void limparTela() {
+		System.out.println("\033[H\033[2J");
+		System.out.flush();
+	}
+	
+	
 	public static XadrezPosicao lerXadrezPosicao(Scanner sc) {
+		/*
+		 * Ler a Posicao
+		 * vou criar um metodo
+		 * da classe XadrezPosicao
+		 * E vou passar como parametro o Scanner
+		 * Que vai ser instanciado na Principal
+		 * E eu vou receber ele aqui como argumento
+		 * E vou fazer a leitura da minha posição
+		 * através do Scanner
+		 */
 		/*
 		 * Para evitar qualquer erro de formato
 		 * Eu vou colocar tudo isso dentro do bloco try

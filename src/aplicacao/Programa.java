@@ -1,9 +1,11 @@
 package aplicacao;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import xadrez.PartidaXadrez;
 import xadrez.PecaXadrez;
+import xadrez.XadrezException;
 import xadrez.XadrezPosicao;
 
 public class Programa {
@@ -25,16 +27,42 @@ public class Programa {
 		 * 
 		 */
 		while(true) {
+			try {
+				UI.limparTela();
 				UI.imprimaTabuleiro(partidaXadrez.getPecas());
 				System.out.println();
-				System.out.println("Digite a posição de origem: ");
+				System.out.print("Digite a posicao de origem: ");
 				XadrezPosicao origem = UI.lerXadrezPosicao(sc);
 				
 				System.out.println();
-				System.out.println("Digite a posição de destino: ");
+				System.out.print("Digite a posicaoo de destino: ");
 				XadrezPosicao destino = UI.lerXadrezPosicao(sc);
 				
 				PecaXadrez capturarPeca = partidaXadrez.executarMovimentoXadrez(origem, destino);
+			}catch(XadrezException e) {
+				/*
+				 * Vou fazer um tratamento básico
+				 * Vou imprimir a mensagem na tela
+				 * e vou fazer um nextLine, 
+				 * para o programa aguardar eu apertar ENTER
+				 */
+				System.out.println(e.getMessage());
+				sc.nextLine();
+			}catch(InputMismatchException e) {
+				/*
+				 * Esse InputMimatchException
+				 * existe lá no IU
+				 * E existe uma mensagem dentro dele
+				 * que corresponde a
+				 * Erro lendo XadrezPosicao. Os valores válidos são de a1 até h8
+				 * Vou fazer um tratamento básico
+				 * Vou imprimir a mensagem na tela
+				 * e vou fazer um nextLine, 
+				 * para o programa aguardar eu apertar ENTER
+				 */
+				System.out.println(e.getMessage());
+				sc.nextLine();
+			}
 		}
 
 	}
