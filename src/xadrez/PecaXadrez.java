@@ -1,6 +1,7 @@
 package xadrez;
 
 import camada.tabuleiro.Peca;
+import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
 /*
  * Eu não posso implementar 
@@ -29,7 +30,30 @@ public abstract class PecaXadrez extends Peca {
 		return color;
 	}
 	
+	/*
+	 * Esse metodo vai ficar aqui
+	 * pois vai ser reaproveitado por todas as pecas do xadrez
+	 */
 	
+	protected boolean existePecaAdversaria(Posicao posicao) {
+		/*
+		 * Vou criar uma variavel do tipo PecaXadrez
+		 * recebendo a peca que tiver na posição do parametro
+		 * ou seja peguei a peça que está nessa posição.
+		 */
+		PecaXadrez p = (PecaXadrez)getTabuleiro().peca(posicao);
+		/*
+		 * agora vou testar se p é diferente de nulo
+		 * e se p.getColor é diferente da cor da minha peça onde eu estou
+		 * ou seja da posição.
+		 * Em outra palavras estou testando
+		 * se cor da peça dessa posição que recebi por parametro
+		 * é diferente da cor da minha peça
+		 * Ou seja uma peça adversária
+		 * 
+		 */
+		return p != null && p.getColor() != color;
+	}
 	
 	
 

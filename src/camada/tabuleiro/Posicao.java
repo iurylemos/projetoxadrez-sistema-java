@@ -25,6 +25,16 @@ public class Posicao {
 		this.coluna = coluna;
 	}
 	
+	/*
+	 * Atualizar os valores de uma posição.
+	 */
+	
+	public void setValor(int linha, int coluna) {
+		this.linha = linha;
+		this.coluna = coluna;
+	}
+	
+	
 	
 /*
  * Vou criar um toString para imprimir a posição na tela

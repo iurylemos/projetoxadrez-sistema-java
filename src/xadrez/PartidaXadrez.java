@@ -102,6 +102,10 @@ public class PartidaXadrez {
 		 * Se não existir, esse metodo vai lançar uma excessão
 		 */
 		validarPosicaoOrigem(origem);
+		/*
+		 * Validar a posição de destino também
+		 */
+		validarPosicaoDestino(origem, destino);
 		Peca capturarPeca = fazerMovimento(origem, destino);
 		
 		/*Agora vou retornar a peça capturada. 
@@ -135,6 +139,26 @@ public class PartidaXadrez {
 			throw new XadrezException("Não existe movimentos possíveis para a peça escolhida");
 		}
 	}
+	
+	
+	/*
+	 * Validando posição de destino
+	 */
+	private void validarPosicaoDestino(Posicao origem, Posicao destino) {
+		/*
+		 * Basta eu testar se a posição de destino
+		 * ela é um movimento possível em relação a posição de origem
+		 * SE A PECA DE ORIGEM, A POSIÇÃO DE DESTINO
+		 * NÃO É UM MOVIMENTO POSSÍVEL
+		 * ENTÃO EU NÃO POSSO MEXER PARA LÁ
+		 */
+		if(!tabuleiro.peca(origem).possivelMovimentacao(destino)) {
+			throw new XadrezException("A peça escolhida não pode se mover para a posição de destino");
+		}
+	}
+	
+	
+	
 	
 	
 	private Peca fazerMovimento(Posicao origem, Posicao destino) {
