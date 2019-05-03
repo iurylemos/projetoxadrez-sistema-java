@@ -120,6 +120,20 @@ public class PartidaXadrez {
 		if(!tabuleiro.temUmaPecaNaPosicao(posicao)) {
 			throw new XadrezException("Não existe peça na posição de origem.");
 		}
+		/*
+		 * Verificar se existe movimentos possíveis
+		 * para a peça.
+		 * Vou chamar o tabuleiro
+		 * vou acessar a peca(posicao) (DE ORIGEM)
+		 * e apartir dessa peca vou chamar o atributo
+		 * que criei de movimentos
+		 * Se não tiver nenhum movimento possível
+		 * nessa peca do tabuleiro
+		 * vou lançar uma excessão
+		 */
+		if(!tabuleiro.peca(posicao).existeAlgumaMovimentacaoPossivel()) {
+			throw new XadrezException("Não existe movimentos possíveis para a peça escolhida");
+		}
 	}
 	
 	

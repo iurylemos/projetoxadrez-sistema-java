@@ -19,4 +19,11 @@ public String toString() {
 	 */
 	return "T";
 }
+
+	@Override
+	public boolean[][] possivelMovimento() {
+		// TODO Auto-generated method stub
+		boolean [][] mat = new boolean[getTabuleiro().getLinhas()][getTabuleiro().getColunas()];
+		return mat;
+	}
 }
