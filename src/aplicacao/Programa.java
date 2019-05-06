@@ -34,8 +34,35 @@ public class Programa {
 				System.out.print("Digite a posicao de origem: ");
 				XadrezPosicao origem = UI.lerXadrezPosicao(sc);
 				
+			/*
+			 * Imprimir as posição possiveis a partir
+			 * da peça de origem.
+			 * 
+			 * Depois que o usuário digitar a posição de origem
+			 * 
+			 * Vou declarar uma matriz booleana
+			 * vou chamar ela de movimentosPossiveis
+			 * e ela vai receber
+			 * o meu partidaXadrez . movimentosPossiveis
+			 * a partida minha posição de origem
+			 * que veio do usuário
+			 * 
+			 */
+				
+				boolean[][] movimentosPossiveis = partidaXadrez.movimentosPossiveis(origem);
+				/*
+				 * Limpar minha tela
+				 */
+				UI.limparTela();
+				/*
+				 * após a limpeza
+				 * vou imprimir de novo o tabuleiro
+				 */
+				UI.imprimaTabuleiro(partidaXadrez.getPecas(), movimentosPossiveis);
+				
+				
 				System.out.println();
-				System.out.print("Digite a posicaoo de destino: ");
+				System.out.print("Digite a posicao de destino: ");
 				XadrezPosicao destino = UI.lerXadrezPosicao(sc);
 				
 				PecaXadrez capturarPeca = partidaXadrez.executarMovimentoXadrez(origem, destino);

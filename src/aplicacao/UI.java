@@ -102,8 +102,13 @@ public class UI {
 				 * quadrada
 				 * 
 				 * E aqui abaixo vou imprimir a peca utilizando o metodo imprimaPeca
+				 * ************************************
+				 * Quando for para imprimir o tabuleiro
+				 * sem a questão dos movimentos possíveis
+				 * eu simplesmente vou passar o valor false
+				 * indicando que nenhuma peça é para ter o fundo colorido
 				 */
-				imprimaPeca(pecas[i][j]);
+				imprimaPeca(pecas[i][j], false);
 			}
 			/*
 			 * Depois do for das colunas Eu tenho que dar uma quebra de linha Para ele
@@ -114,15 +119,58 @@ public class UI {
 		}
 		System.out.println("  a b c d e f g h");
 	}
+	
+	/*
+	 * Sobre carga do imprimir tabuleiro
+	 * só que agora passando os movimentos possíveis
+	 * que é uma matriz
+	 * com cores.
+	 */
+	public static void imprimaTabuleiro(PecaXadrez[][] pecas, boolean[][] movimentosPossiveis) {
+		for (int i = 0; i < pecas.length; i++) {
+			System.out.print((8 - i) + " ");
+			for (int j = 0; j < pecas.length; j++) {
+				/*
+				 * Verifique no imprimaTabuleiro que modifiquei
+				 * o imprima peça dizendo que é falso
+				 * mas quando eu colocar as cores
+				 * vai ficar positivo com as cores.
+				 * Ai sim vai pintar o fundo colorido
+				 * dependendo dessa variável
+				 */
+				imprimaPeca(pecas[i][j], movimentosPossiveis[i][j]);
+			}
+			
+			System.out.println();
+		}
+		System.out.println("  a b c d e f g h");
+	}
+	/*
+	 * Fim do imprimir tabuleiro de sobrecarga
+	 */
+	
+	
+	
+	
+	
+	
+	
 
 	/*
 	 * Vou criar um metodo auxiliar para imprimir uma peça
+	 * Vou atribuir aqui no parametro um boolean background
+	 * que é para dizer se é para IMPRIMIR COLORIDO OU não
 	 */
-
-	private static void imprimaPeca(PecaXadrez pecas) {
+	private static void imprimaPeca(PecaXadrez pecas, boolean background) {
+	if(background) {
+		/*
+		 * Se o background for verdadeira, vou ter que mudar a cor do fundo da tela
+		 */
+		System.out.print(ANSI_BLUE_BACKGROUND);
+		}
 		if (pecas == null) {
 			// Se essa peça for nulo, ela não existe no tabuleiro
-			System.out.print("-");
+			System.out.print("-" + ANSI_RESET);
 		} else {
 			// Caso contrário vou imprimir a peca
 			/* De acordo com as cores

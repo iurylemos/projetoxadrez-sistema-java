@@ -85,6 +85,30 @@ public class PartidaXadrez {
 		return mat;
 	}
 	
+	/*
+	 * Movimentos possíveis
+	 */
+	
+	public boolean[][] movimentosPossiveis(XadrezPosicao posicaoOrigem) {
+		/*
+		 * Além de retornar uma matriz de boolean
+		 * que são as posição de xadrez
+		 * 
+		 * o que vou ter que fazer?
+		 * vou converter essa posição de xadrez
+		 * para uma posição de matriz normal
+		 */
+		Posicao posicao = posicaoOrigem.toPosicao();
+		//Antes de prosseguir vou validar a posição
+		validarPosicaoOrigem(posicao);
+		/* Agora vou retornar os movimentos possíveis da peça 
+		dessa posição
+		Eu fiz isso para que na principal eu possa imprimir
+		os movimentos possiveis dessa peça.  */
+		return tabuleiro.peca(posicao).possivelMovimento();
+	}
+	
+	
 	
 	
 	public PecaXadrez executarMovimentoXadrez(XadrezPosicao posicaoOrigem, XadrezPosicao posicaoDestino) {
