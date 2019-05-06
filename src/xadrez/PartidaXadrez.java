@@ -11,7 +11,8 @@ public class PartidaXadrez {
 	 * Coração do sistema de Xadrez
 	 * Nessa classe vai ter as regras
 	 */
-	
+	private int turno;
+	private Color jogadorAtual;
 	private Tabuleiro tabuleiro;
 	/*
 	 * Esse tabuleiro tem uma matriz de peças
@@ -19,6 +20,8 @@ public class PartidaXadrez {
 	 */
 	
 	public PartidaXadrez () {
+		turno = 1;
+		jogadorAtual = Color.WHITE;
 		/*
 		 * Quem tem que saber a dimensão de um
 		 * tabuleiro de xadrez
@@ -29,6 +32,14 @@ public class PartidaXadrez {
 		 */
 		tabuleiro = new Tabuleiro(8, 8);
 		iniciarPartida();
+	}
+	
+	public int getTurno() {
+		return turno;
+	}
+	
+	public Color getJogadorAtual() {
+		return jogadorAtual;
 	}
 	
 	public PecaXadrez[][] getPecas() {
@@ -131,6 +142,12 @@ public class PartidaXadrez {
 		 */
 		validarPosicaoDestino(origem, destino);
 		Peca capturarPeca = fazerMovimento(origem, destino);
+		/*
+		 * Implementando o próximo Turno
+		 */
+		proximoTurno();
+		
+		
 		
 		/*Agora vou retornar a peça capturada. 
 		 * Vou ter que dar um downcasting antes
@@ -148,6 +165,29 @@ public class PartidaXadrez {
 		if(!tabuleiro.temUmaPecaNaPosicao(posicao)) {
 			throw new XadrezException("Não existe peça na posição de origem.");
 		}
+		
+		if(jogadorAtual != ((PecaXadrez)tabuleiro.peca(posicao)).getColor()) {
+		/*
+		 * Se o jogadorAtual for diferente do 
+		 * tabuleiro a peça na posição do getColor
+		 * Só que o GetColor não está dando certo aqui
+		 * pois ela é uma propriedade do PecaXadrez
+		 * pois o tabuleiro.peca é da classe mais generica
+		 * que é o PECA, então vou ter que dar um downcasting
+		 * aqui para a classe PecaXadrez
+		 * 
+		 * Então fica assim eu pego a peça do tabuleiro
+		 * nessa posição faço o downcasting para PecaXadrez
+		 * e testo a Cor dela com o getColor
+		 * se essa cor for diferente do cor do jogadorAtual
+		 * Significa que é uma peça do jogadorAdversário
+		 * e nisso eu não posso move-la
+		 */
+			throw new XadrezException("Peca escolhida nao e a sua!");
+		}
+		
+		
+		/**************************************/
 		/*
 		 * Verificar se existe movimentos possíveis
 		 * para a peça.
@@ -162,6 +202,8 @@ public class PartidaXadrez {
 		if(!tabuleiro.peca(posicao).existeAlgumaMovimentacaoPossivel()) {
 			throw new XadrezException("Não existe movimentos possíveis para a peça escolhida");
 		}
+		
+		
 	}
 	
 	
@@ -203,6 +245,28 @@ public class PartidaXadrez {
 		return capturarPeca;
 	}
 	
+	/*
+	 * Metodo responsável pela proximoTurno
+	 */
+	
+	private void proximoTurno() {
+		/*
+		 * Vou ter que incrementar para ir de 
+		 * 1 vai para o 2, e do 2 vai para o 3
+		 * 
+		 * JogadorAtual recebe
+		 * EXPRESSÃO TERNÁRIA
+		 * (SE O JOGADORATUAL FOR IGUAL A COR BRANCA
+		 * ENTÃO AGORA ELE VAI SER A COR PRETA
+		 * CASO CONTRARIO : ELE VAI SER A COR BRANCA
+		 */
+		turno++;
+		jogadorAtual = (jogadorAtual == Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -240,19 +304,20 @@ public class PartidaXadrez {
 	
 	
 	
-	/*
-	 * Este metodo vai ser responsável por iniciar a
-	 * partida de Xadrez.
-	 * 
-	 * na variavel tabuleiro, vou chamar o metodo colocarPeca
-	 * E dentro dos parametro vou instanciar a Torre
-	 * no primeiro parametro eu digo que está se referenciando ao TABULEIRO
-	 * e na outra eu digo a COR e a posição eu crio
-	 * instanciando a classe Posicao e passando o parametro
-	 * vou colocar esse metodo aqui no construtor do PartidaXadrez
-	 */
 	
 	private void iniciarPartida() {
+
+		/*
+		 * Este metodo vai ser responsável por iniciar a
+		 * partida de Xadrez.
+		 * 
+		 * na variavel tabuleiro, vou chamar o metodo colocarPeca
+		 * E dentro dos parametro vou instanciar a Torre
+		 * no primeiro parametro eu digo que está se referenciando ao TABULEIRO
+		 * e na outra eu digo a COR e a posição eu crio
+		 * instanciando a classe Posicao e passando o parametro
+		 * vou colocar esse metodo aqui no construtor do PartidaXadrez
+		 */
 		/*
 		 * No lugar de ser assim:
 		 *  tabuleiro.colocarPeca(new Torre(tabuleiro, Color.WHITE), new Posicao(2,1));

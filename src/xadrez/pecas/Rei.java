@@ -74,7 +74,7 @@ public class Rei extends PecaXadrez {
 		/********************************************/
 		//ACIMA
 		/*
-		 * Vou pegar a posição p, e definir para essa posição
+		 * Vou pegar a posição p, e definir para essa p
 		 * os valores da posição acima do rei
 		 * que seria no primeiro parametro
 		 * a posição do REI - 1 =

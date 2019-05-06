@@ -29,7 +29,7 @@ public class Programa {
 		while(true) {
 			try {
 				UI.limparTela();
-				UI.imprimaTabuleiro(partidaXadrez.getPecas());
+				UI.imprimaPartida(partidaXadrez);
 				System.out.println();
 				System.out.print("Digite a posicao de origem: ");
 				XadrezPosicao origem = UI.lerXadrezPosicao(sc);
