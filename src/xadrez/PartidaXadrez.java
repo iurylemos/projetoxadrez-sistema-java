@@ -1,5 +1,8 @@
 package xadrez;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import camada.tabuleiro.Peca;
 import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
@@ -15,6 +18,17 @@ public class PartidaXadrez {
 	private Color jogadorAtual;
 	private Tabuleiro tabuleiro;
 	/*
+	 * Declarando as duas listas
+	 * no lugar de colocar na hora da declaração;
+	 * Fica melhor eu colocar direto no construtor 
+	 * a parte do new ArrayList
+	 */
+	private List<Peca> pecasNoTabuleiro;
+	private List<Peca> pecasCapturadas;
+	
+	
+	
+	/*
 	 * Esse tabuleiro tem uma matriz de peças
 	 * Só que essas peças são do tipo Peca
 	 */
@@ -22,6 +36,8 @@ public class PartidaXadrez {
 	public PartidaXadrez () {
 		turno = 1;
 		jogadorAtual = Color.WHITE;
+		pecasNoTabuleiro = new ArrayList<>();
+		pecasCapturadas = new ArrayList<>();
 		/*
 		 * Quem tem que saber a dimensão de um
 		 * tabuleiro de xadrez
@@ -239,9 +255,30 @@ public class PartidaXadrez {
 		 */
 		Peca capturarPeca = tabuleiro.removaPeca(destino);
 		/*
-		 * Colocando a peça de origem na peça de destino.
+		 * Colocando a peça de origem no lugar
+		 * da peça de destino.
 		 */
 		tabuleiro.colocarPeca(peca, destino);
+		/*
+		 * Vou testar se essa peça capturada for diferente
+		 * de nulo
+		 * Opa. Capturei essa peça, vou ter que remover
+		 * essa peça lá da lista de peças do tabuleiro.
+		 * e adicionar essa peça na lista de peçasCapturadas
+		 */
+		if(capturarPeca != null) {
+			pecasNoTabuleiro.remove(capturarPeca);
+			/*
+			 * Deu o seguinte erro
+			 * pois a pecaCapturada é do tipo Peca
+			 * E a minha lista é do tipo PecaXadrez
+			 * Para ficar uma lista mais generica
+			 * Vou colocar a lista como Peca
+			 * Para ficar mais genérica
+			 * e aceitar todo tipo de peça.
+			 */
+			pecasCapturadas.add(capturarPeca);
+		}
 		return capturarPeca;
 	}
 	
@@ -295,6 +332,11 @@ public class PartidaXadrez {
 	 * que está vindo no parametro
 		 */
 		tabuleiro.colocarPeca(peca, new XadrezPosicao(coluna, linha).toPosicao());
+		/*
+		 * Aqui além de colocar as peças no tabuleiro
+		 * Eu já coloco ela na lista de peças do tabuleiro
+		 */
+		pecasNoTabuleiro.add(peca);
 		
 	}
 	

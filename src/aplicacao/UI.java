@@ -1,7 +1,10 @@
 package aplicacao;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import xadrez.Color;
 import xadrez.PartidaXadrez;
@@ -90,8 +93,10 @@ public class UI {
 	/*
 	 * Imprimir a partida e não só o tabuleiro
 	 */
-	public static void imprimaPartida(PartidaXadrez partidaXadrez) {
+	public static void imprimaPartida(PartidaXadrez partidaXadrez, List<PecaXadrez> capturadas) {
 		imprimaTabuleiro(partidaXadrez.getPecas());
+		System.out.println();
+		imprimaPecasCapturadas(capturadas);
 		System.out.println();
 		System.out.println("Turno: " + partidaXadrez.getTurno());
 		System.out.println("Aguardando jogador da cor: " + partidaXadrez.getJogadorAtual());
@@ -197,5 +202,48 @@ public class UI {
 		 * fiquem grudadas uma na outra
 		 */
 		System.out.print(" ");
+	}
+	
+	/**************************************/
+	/*
+	 * Imprimir as peças capturadas
+	 * Esse metodo vai receber por parametro
+	 * uma lista de PEÇAS DE XADREZ
+	 */
+	
+	private static void imprimaPecasCapturadas(List<PecaXadrez> capturadas) {
+		/*
+		 * Vou criar uma lista das pecas capturadas BRANCA
+		 * Essa lista vai ser uma lista das pecasCapturadas
+		 * E aqui vou fazer uma expressão lambda
+		 * = stream().filtrando(PREDICADO)
+		 * PREDICADO vai pegar um elemento da lista X
+		 * e ai vou verificar a codição desse elemento
+		 * -> x.getColor() == Color.WHITE
+		 * 
+		 * E assim estou filtrando da minha lista
+		 * todo mundo cujo a cor é BRANCA
+		 * Isso aqui é operação básica para filtrar minah lista
+		 */
+		List<PecaXadrez> white = capturadas.stream().filter(x -> x.getColor() == Color.WHITE).collect(Collectors.toList());
+		List<PecaXadrez> black = capturadas.stream().filter(x -> x.getColor() == Color.BLACK).collect(Collectors.toList());
+		System.out.println("Pecas capturadas:");
+		System.out.print("Pecas brancas: ");
+		/* Vou fazer um macete para imprimir as peças brancas
+		 * que é uma lista
+		 * 
+		 * Isso daqui é um jeitinho de imprimir um array
+		 * de valores no JAVA
+		 * 
+		 */
+		System.out.print(ANSI_WHITE);
+		System.out.println(Arrays.toString(white.toArray()));
+		System.out.print(ANSI_RESET);
+		/*********************************************/
+		System.out.print("Pecas negras: ");
+		System.out.print(ANSI_YELLOW);
+		System.out.println(Arrays.toString(black.toArray()));
+		System.out.print(ANSI_RESET);
+		
 	}
 }
