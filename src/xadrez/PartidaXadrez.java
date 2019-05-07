@@ -2,6 +2,7 @@ package xadrez;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import camada.tabuleiro.Peca;
 import camada.tabuleiro.Posicao;
@@ -17,6 +18,7 @@ public class PartidaXadrez {
 	private int turno;
 	private Color jogadorAtual;
 	private Tabuleiro tabuleiro;
+	private boolean check;
 	/*
 	 * Declarando as duas listas
 	 * no lugar de colocar na hora da declaração;
@@ -57,6 +59,11 @@ public class PartidaXadrez {
 	public Color getJogadorAtual() {
 		return jogadorAtual;
 	}
+	
+	public boolean getCheck() {
+		return check;
+	}
+	
 	
 	public PecaXadrez[][] getPecas() {
 		/*
@@ -159,12 +166,48 @@ public class PartidaXadrez {
 		validarPosicaoDestino(origem, destino);
 		Peca capturarPeca = fazerMovimento(origem, destino);
 		/*
+		 * Quando eu executo o movimento
+		 * e capturo a peça
+		 * eu vou ter que testar se esse movimento
+		 * colocou o próprio jogador em check
+		 * e isso eu não posso deixar.
+		 * 
+		 */
+		if(testeCheck(jogadorAtual)) {
+			/*
+			 * Se isso for verdade ele se colocou em cheque
+			 * Então eu vou ter que desfazer o movimento
+			 * e lançar uma excesao.
+			 */
+			desfazerMovimento(origem, destino, capturarPeca);
+			throw new XadrezException("Você não pode se colocar em cheque");
+		}
+		/*
+		 * Se esse if falhar significa que o jogador
+		 * não se colocou em cheque
+		 * 
+		 * resta agora testar se o oponente ficou em cheque
+		 * 
+		 * vou ter que colocar o atributo check 
+		 * tem que ser verdadeiro.
+		 * 
+		 * vai receber se o oponente ficou em check
+		 * vai receber verdadeiro.
+		 * se não ela recebe falso.
+		 * 
+		 * se teste check do oponente do jogadorAtual
+		 * se isso for verdade 
+		 * ? Então TRUE está em check
+		 * : Se não FALSE não está em check
+		 */
+		check = (testeCheck(oponente(jogadorAtual))) ? true : false;
+		
+		
+		/*
 		 * Implementando o próximo Turno
 		 */
 		proximoTurno();
-		
-		
-		
+	
 		/*Agora vou retornar a peça capturada. 
 		 * Vou ter que dar um downcasting antes
 		 * Por que?
@@ -283,6 +326,48 @@ public class PartidaXadrez {
 	}
 	
 	/*
+	 * Desfazer movimento
+	 * Para em caso dele colocar o REI 
+	 * em situação de cheque.
+	 * 
+	 * Nos parametro vai receber a peça de origem
+	 * e uma possível peça capturada
+	 */
+	
+	private void desfazerMovimento(Posicao origem, Posicao destino, Peca pecaCapturada) {
+		/*
+		 * Tira aquela peça que você moveu lá do destino
+		 */
+		Peca peca = tabuleiro.removaPeca(destino);
+		/*
+		 * Devolvendo a peça para a origem onde estava
+		 * Pois esse movimento não é possivel
+		 */
+		tabuleiro.colocarPeca(peca, origem);
+		/*
+		 * E se tinha sido capturada uma peça?
+		 * Eu vou ter que voltar essa peça capturada para a origem
+		 * de destino.
+		 */
+		if(pecaCapturada != null) {
+			tabuleiro.colocarPeca(pecaCapturada, destino);
+			/*
+			 * E agora eu tenho que tirar essa peca
+			 * da lista de pecasCapturadas
+			 * e colocar ela novamente na lista de peças
+			 * no tabuleiro.
+			 */
+			pecasCapturadas.remove(pecaCapturada);
+			pecasNoTabuleiro.add(pecaCapturada);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	/*
 	 * Metodo responsável pela proximoTurno
 	 */
 	
@@ -340,9 +425,138 @@ public class PartidaXadrez {
 		
 	}
 	
+	/*
+	 * Saber qual é a cor do rei
+	 * 
+	 */
+	private PecaXadrez rei(Color color) {
+		/*
+		 * Eu vou ter que procurar na lista
+		 * do pecasNoTabuleiro, qual é a cor desse rei
+		 * 
+		 * strem().filter(PREDICADO)
+		 * Vou procurar então
+		 * (PREDICADO) = "Toda peça x 
+		 * -> = TAL QUE a cor dessa peça x, seja a mesma cor
+		 * que eu passar por aqui pelo parametro
+		 * 
+		 * Só que essa lista é do tipo Peca, só que Peca não tem cor
+		 * Quem tem cor é a PecaXadrez, então vou ter fazer um downcasting
+		 * ((PecaXadrez) de x) . getColor
+		 * 
+		 * Expressões Lambdas
+		 */
+		List<Peca> list = pecasNoTabuleiro.stream().filter(x -> ((PecaXadrez)x).getColor() == color).collect(Collectors.toList());
+		/*
+		 * Vou testar agora
+		 * PARA cada Peca p na minha list {
+		 */
+		for(Peca p : list) {
+			/*
+			 * Se essa peça for uma instância de rei
+			 * significa que eu encontrei o rei
+			 * e assim eu retorno dando um downcasting
+			 */
+			if(p instanceof Rei) {
+				return (PecaXadrez)p;
+			}
+		}
+		/*
+		 * Se eu esgotar o meu for e não encontrar o
+		 * meu rei
+		 * vou lançar uma excessão aqui
+		 * que é uma excesão pronta do java
+		 * E ele vai conter a mensagem
+		 * não existe o rei da cor TAL no tabuleiro
+		 * Isso daqui é para nunca acontecer, se um dia acontecer
+		 * é por que o meu sistema de xadrez está
+		 * com algum problema.
+		 */
+		throw new IllegalStateException("Não existe o rei da cor" + color + "no tabuleiro.");
+	}
+	
+	/*
+	 * Criar o metodo check
+	 * por que uma COR?
+	 * Por que vou testar se o rei dessa cor
+	 * está em check.
+	 */
+	
+	private boolean testeCheck(Color color) {
+		/*
+		 * Eu vou pegar a posição do rei
+		 * vou chamar de posicaoRei
+		 * como vou pegar?
+		 * eu vou chamar o metodo rei, e passando
+		 * a cor como argumento ai eu pego a peça
+		 * correspondente ao rei.
+		 * 
+		 * E apartir dessa peça, eu vou chamar o
+		 * .getXadrezPosicao(), e o toPosicao().
+		 * E assim eu pego a posição do meu rei
+		 * que está em formato de matriz.
+		 */
+		Posicao posicaoRei = rei(color).getPosicaoXadrez().toPosicao();
+		/*
+		 * Próximo passo, eu vou querer uma lista
+		 * das peças do meu oponente dessa cor
+		 * 
+		 * Essa lista vai ser as peças no tabuleiros
+		 * filtradas com a cor do oponente desse rei
+		 * que vem como argumento]
+		 * 
+		 * Fui no metodo rei, e copiei
+		 * a parte da expressão lambda
+		 * Modifiquei só na parte da cor
+		 * pois tem que ser a cor do metodo oponente
+		 * E essa é a lista de peças do oponente
+		 */
+		List<Peca> pecasOponente = pecasNoTabuleiro.stream().filter(x -> ((PecaXadrez)x).getColor() == oponente(color)).collect(Collectors.toList());
+		/*
+		 * Para cada peça continda nessa lista
+		 * eu vou ter que testar se existe algum movimento
+		 * possível que leva a posição do meu rei
+		 * que está no atributo posicaoRei
+		 * 
+		 * Para cada Peça p continda na lista pecasOponente
+		 */
+		for(Peca p: pecasOponente) {
+			/*
+			 * Pegando os movimentos possíveis, com uma matriz
+			 */
+			boolean[][] mat = p.possivelMovimento();
+			if(mat[posicaoRei.getLinha()][posicaoRei.getColuna()] ) {
+				/*
+				 * Se esse elemento da matriz for verdadeiro
+				 * significa que o meu rei está em check
+				 * e assim vai retornar true
+				 * dizendo que o metodo teste de check deu verdadeiro
+				 */
+				return true;
+			}
+		}
+		/*
+		 * Se o rei não for marcado como true
+		 * é por que não está em cheque
+		 * e assim retorno falso depois de esgotar o FOR
+		 */
+		return false;
+	}
 	
 	
 	
+	
+	private Color oponente(Color color) {
+		/*
+		 * Se esta cor que eu passei como argumento
+		 * for igual a Color.WHITE
+		 * ? = ENTÃO
+		 * EU VOU RETORNAR Color.BLACK
+		 * : = CASO CONTRARIO
+		 * eu vou retornar = Color.WHITE
+		 */
+		return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
 	
 	
 	

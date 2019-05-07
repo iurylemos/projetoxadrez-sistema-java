@@ -25,6 +25,23 @@ public abstract class PecaXadrez extends Peca {
 		super(tabuleiro);
 		this.color = color;
 	}
+	/*
+	 * Implementando a lógica do cheque
+	 */
+	public XadrezPosicao getPosicaoXadrez() {
+		/*
+		 * Vou ter que pegar o posição que foi herdada
+		 * lá da classe Peca e eu vou ter que converter
+		 * para a XadrezPosicao
+		 * 
+		 * E para fazer isso vou utilizar o metodo
+		 * stático fromPosition = da posição
+		 * E esse metodo pega uma posição de matriz
+		 * e converte para a posição Xadrez
+		 */
+		return XadrezPosicao.fromPosicao(posicao);
+	}
+	
 
 	public Color getColor() {
 		return color;

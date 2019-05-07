@@ -114,11 +114,16 @@ public class XadrezPosicao {
 		 * = COLUNA do XADREZ.
 		 * SEGUNDA CONDIÇÃO:
 		 * 'a' = coluna 
-		 * menos a linha da classe Posição
+		 * (Tinha dado erro quando coloquei o MENOS
+		 * aqui abaixo, ai fui de erro em erro
+		 * até chegar aqui e encontrar o verdadeiro ERRO
+		 * colocando o MAIS, ou seja para somar
+		 * com a coluna da matriz )
+		 * mais a coluna da matriz
 		 * = LINHA do XADREZ.
 		 * 
 		 */
-		return new XadrezPosicao((char)('a' - posicao.getColuna()), 8 - posicao.getLinha() );
+		return new XadrezPosicao((char)('a' + posicao.getColuna()), 8 - posicao.getLinha() );
 	}
 	
 	/*

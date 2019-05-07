@@ -100,6 +100,12 @@ public class UI {
 		System.out.println();
 		System.out.println("Turno: " + partidaXadrez.getTurno());
 		System.out.println("Aguardando jogador da cor: " + partidaXadrez.getJogadorAtual());
+		if(partidaXadrez.getCheck()) {
+			/*
+			 * Se cair aqui significa que a partida está em check
+			 */
+			System.out.println("CHECK!");
+		}
 	}
 	
 	
