@@ -136,7 +136,7 @@ public class Peao extends PecaXadrez {
 			 * na primeira casa, e assim ele não iria conseguir
 			 * fazer os dois pulo do peão
 			 */
-			Posicao p2 = new Posicao(posicao.getLinha() - 1, posicao.getColuna());
+			Posicao p2 = new Posicao(posicao.getLinha() + 1, posicao.getColuna());
 			if(getTabuleiro().posicaoExiste(p) && !getTabuleiro().temUmaPecaNaPosicao(p) && getTabuleiro().posicaoExiste(p2) && !getTabuleiro().temUmaPecaNaPosicao(p2) && getContagemMovimentos() == 0) {
 				/*
 				 * Se a posição existe, e se não tem uma peça na posição
