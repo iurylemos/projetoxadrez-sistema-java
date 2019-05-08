@@ -20,6 +20,7 @@ import camada.tabuleiro.Tabuleiro;
 public abstract class PecaXadrez extends Peca {
 	
 	private Color color;
+	private int contagemMovimentos;
 
 	public PecaXadrez(Tabuleiro tabuleiro, Color color) {
 		super(tabuleiro);
@@ -46,6 +47,20 @@ public abstract class PecaXadrez extends Peca {
 	public Color getColor() {
 		return color;
 	}
+	
+	public int getContagemMovimentos() {
+		return contagemMovimentos;
+	}	
+	
+	public void aumentarContagemMovimentos() {
+		contagemMovimentos++;
+	}
+	
+	public void diminuirContagemMovimentos() {
+		contagemMovimentos--;
+	}
+	
+	
 	
 	/*
 	 * Esse metodo vai ficar aqui

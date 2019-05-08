@@ -310,8 +310,28 @@ public class PartidaXadrez {
 	private Peca fazerMovimento(Posicao origem, Posicao destino) {
 		/*
 		 * Implementar a lógica de realizar o movimento.
+		 * Vou retirar essa peca do tipo Peca
+		 * e vou colocar para tipo PecaXadrez
+		 * Utilizando o Casting
+		 * Peca peca = tabuleiro.removaPeca(origem);
+		 * Estava assim 
+		 * e vai ficar como está agora.
+		 * e isso não vai prejudar nada abaixo
+		 * Por que?
+		 * Por que o tabuleiro.colocarPeca
+		 * recebe uma peca como parametro
+		 * e isso faz um upcasting naturalmente
+		 * ou seja, volta pro tipo Peca
 		 */
-		Peca peca = tabuleiro.removaPeca(origem);
+		PecaXadrez peca = (PecaXadrez)tabuleiro.removaPeca(origem);
+		/*
+		 * A cada movimento que eu realizar vou
+		 * acrescentar a contagem de movimentos
+		 */
+		peca.aumentarContagemMovimentos();
+		
+		
+		
 		/*
 		 * Agora eu vou declarar uma outra peça
 		 * que vai ser a pecaCapturada
@@ -359,7 +379,14 @@ public class PartidaXadrez {
 		/*
 		 * Tira aquela peça que você moveu lá do destino
 		 */
-		Peca peca = tabuleiro.removaPeca(destino);
+		PecaXadrez peca = (PecaXadrez)tabuleiro.removaPeca(destino);
+		/*
+		 * Quando eu desfazer o movimento
+		 * Eu tenho que decrementar a quantidade
+		 * de movimento dessa peça.
+		 */
+		peca.diminuirContagemMovimentos();
+		
 		/*
 		 * Devolvendo a peça para a origem onde estava
 		 * Pois esse movimento não é possivel
