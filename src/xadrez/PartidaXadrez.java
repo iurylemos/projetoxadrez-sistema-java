@@ -19,6 +19,7 @@ public class PartidaXadrez {
 	private Color jogadorAtual;
 	private Tabuleiro tabuleiro;
 	private boolean check;
+	private boolean checkMate;
 	/*
 	 * Declarando as duas listas
 	 * no lugar de colocar na hora da declaração;
@@ -62,6 +63,10 @@ public class PartidaXadrez {
 	
 	public boolean getCheck() {
 		return check;
+	}
+	
+	public boolean getCheckMate() {
+		return checkMate;
 	}
 	
 	
@@ -204,10 +209,26 @@ public class PartidaXadrez {
 		
 		
 		/*
+		 * Se a jogada que eu fiz deixou o meu
+		 * oponente em checkMate
+		 * não vai haver próximo turno
 		 * Implementando o próximo Turno
+		 * 
+		 * SE A JOGADA QUE EU FIZ DEIXOU O MEU OPONENTE
+		 * EM CHECK MATE
+		 * 
+		 * VOU CHAMAR O TESTECHECKMATE do OPONENTE
+		 * no JOGADOR ATUAL
+		 * 
+		 * Se o oponente da peça que mexeu ficou
+		 * em cheque mate, significa que o jogo acabou.
+		 * se não continua.
 		 */
-		proximoTurno();
-	
+		if(testeCheckMate(oponente(jogadorAtual))) {
+			checkMate = true;
+		}else {
+			proximoTurno();
+		}
 		/*Agora vou retornar a peça capturada. 
 		 * Vou ter que dar um downcasting antes
 		 * Por que?
@@ -543,7 +564,107 @@ public class PartidaXadrez {
 		return false;
 	}
 	
-	
+	/*
+	 * Metodo checkMate
+	 */
+	private boolean testeCheckMate(Color color) {
+		if(!testeCheck(color)) {
+			/*
+			 * Se essa cor não estiver em check
+			 * significa que não está em check mate.
+			 */
+			return false;
+		}
+		/*
+		 * Se todas as peças dessa cor, não tiver
+		 * um movimento possível que tire o rei do check
+		 * 
+		 * Vou criar uma lista e essa lista vai ter todas
+		 * as peças dessa cor aqui
+		 */
+		List<Peca> list = pecasNoTabuleiro.stream().filter(x -> ((PecaXadrez)x).getColor() == color).collect(Collectors.toList());
+		for(Peca p: list) {
+			/*
+			 * Se possuir algum movimento possível da peças
+			 * dessa cor, que tire o check do rei
+			 * ai eu retorno falso.
+			 */
+			boolean[][] mat = p.possivelMovimento();
+			for(int i=0; i<tabuleiro.getLinhas(); i++) {
+				for(int j=0; j<tabuleiro.getColunas(); j++) {
+					/*
+					 * Para cada elemento da matriz, eu
+					 * tenho que saber, se é um movimento possível.s
+					 */
+					if(mat[i][j]) {
+					/*
+					 * Vou pegar essa peça p,
+					 * mover essa peça para essa posição [i][j]
+					 * que é um movimento possível, e ai 
+					 * sim vou testar se é um movimento possível.
+					 * 
+					 * Primeiro vou ter que pegar uma Posição
+					 * origem que é a posição da peça P
+					 * 
+					 * Eu poderia simplesmente colocar
+					 * p.getPosicao mas como p é PROTECTED
+					 * Como se trata de uma classe de outro pacote
+					 * que não é uma subclasse
+					 * eu vou ter que dar um DOWNCASTING
+					 * para PecaXadrez desse P
+					 * e partir desse objeto que agora é do tipo PecaXadrez
+					 * eu vou chamar o getPosicaoXadrez
+					 * que vai ser a posição no formato do xadrez
+					 * e ai a partir dessa posição no formato do xadrez
+					 * eu posso converter ela para toPosition()
+					 * 
+					 * Posicao de destino vai ser o i j da matriz
+					 * 
+					 * Agora vou realizar o movimento da peça p, 
+					 * da origem para o destino
+					 * 
+					 */
+						Posicao origem = ((PecaXadrez)p).getPosicaoXadrez().toPosicao();
+						Posicao destino = new Posicao(i,j);
+						//Esse metodo realizar o movimento da peça de origem para destino
+						Peca pecaCapturada = fazerMovimento(origem, destino);
+						/*
+						 * Agora eu vou testar se ainda está em check
+						 * 
+						 * Vou primeiro criar uma variavel auxiliar
+						 * chamada de testeCheck e ela vai receber
+						 * a chamada do metodo teste check
+						 * e ela vai testar se o rei da minha cor
+						 * ainda está em check
+						 */
+						boolean testeCheck = testeCheck(color);
+						/*
+						 * Antes de concluir vou chamar o
+						 * desfazermovimento
+						 * Por que?
+						 * Por que eu fiz o movimento ali só para testar
+						 * mas eu tenho que desfazer o Movimento
+						 * não posso esquecer
+						 * se não vou deixar o meu tabuleiro maluco.
+						 */
+						desfazerMovimento(origem, destino, pecaCapturada);
+						/*
+						 * Agora vou testar
+						 * Se não estava em check, significa que esse movimento
+						 * tirou o meu rei do check
+						 * no caso vou retornar false, 
+						 * pois não estava em checkmate
+						 */
+						if(!testeCheck) {
+							return false;
+						}
+						
+					}
+				}
+			}
+		}
+		return true;
+	}
 	
 	
 	private Color oponente(Color color) {
@@ -580,19 +701,13 @@ public class PartidaXadrez {
 		 * eu agora vou atribuir a 'coluna' e a posição 6.  */
 		
 		//Coloca para min, na posição E8, um novo REI
-		colocarNovaPeca('c', 1, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('c', 2, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('d', 2, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('e', 2, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('e', 1, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('d', 1, new Rei(tabuleiro, Color.WHITE));
+		
+		colocarNovaPeca('h', 7, new Torre(tabuleiro, Color.WHITE));
+		colocarNovaPeca('d', 1, new Torre(tabuleiro, Color.WHITE));
+		colocarNovaPeca('e', 1, new Rei(tabuleiro, Color.WHITE));
 
-		colocarNovaPeca('c', 7, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('c', 8, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('d', 7, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('e', 7, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('e', 8, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('d', 8, new Rei(tabuleiro, Color.BLACK));
+		colocarNovaPeca('b', 8, new Torre(tabuleiro, Color.BLACK));
+		colocarNovaPeca('a', 8, new Rei(tabuleiro, Color.BLACK));
 	}
 	
 	

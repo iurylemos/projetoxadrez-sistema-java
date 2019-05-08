@@ -99,12 +99,21 @@ public class UI {
 		imprimaPecasCapturadas(capturadas);
 		System.out.println();
 		System.out.println("Turno: " + partidaXadrez.getTurno());
-		System.out.println("Aguardando jogador da cor: " + partidaXadrez.getJogadorAtual());
-		if(partidaXadrez.getCheck()) {
-			/*
-			 * Se cair aqui significa que a partida está em check
-			 */
-			System.out.println("CHECK!");
+		/*
+		 * Se não tiver em checkMate eu espero a proxima jogada
+		 * se tiver em check mate, imprimo o ELSE
+		 */
+		if(!partidaXadrez.getCheckMate()) {
+			System.out.println("Aguardando jogador da cor: " + partidaXadrez.getJogadorAtual());
+			if(partidaXadrez.getCheck()) {
+				/*
+				 * Se cair aqui significa que a partida está em check
+				 */
+				System.out.println("CHECK!");
+				}
+		}else {
+				System.out.println("CHECKMATE!");
+				System.out.println("Vencedor: " +partidaXadrez.getJogadorAtual());
 		}
 	}
 	

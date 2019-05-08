@@ -34,8 +34,9 @@ public class Programa {
 		 * Esse metodo vai receber a matriz de peças
 		 * da minha partida.
 		 * 
+		 * Enquanto minha partida não estiver em checkMate.
 		 */
-		while(true) {
+		while(!partidaXadrez.getCheckMate()) {
 			try {
 				UI.limparTela();
 				UI.imprimaPartida(partidaXadrez, capturadas);
@@ -118,6 +119,15 @@ public class Programa {
 				sc.nextLine();
 			}
 		}
+		/*
+		 * Terminou o meu enquanto, significa que deu checkMate
+		 * Ai vou chamar o meu IU
+		 * Limpando a tela
+		 * E vou imprimir novamente a partida
+		 * para termos a visão da partida finalizada.
+		 */
+		UI.limparTela();
+		UI.imprimaPartida(partidaXadrez, capturadas);
 
 	}
 
