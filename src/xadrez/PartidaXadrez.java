@@ -1,5 +1,6 @@
 package xadrez;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ public class PartidaXadrez {
 	private boolean check;
 	private boolean checkMate;
 	private PecaXadrez peaoPassante;
+	//Promocao quando um peão faz uma dama.
+	private PecaXadrez promocao;
 	/*
 	 * Declarando as duas listas
 	 * no lugar de colocar na hora da declaração;
@@ -76,6 +79,10 @@ public class PartidaXadrez {
 	
 	public PecaXadrez getPeaoPassante() {
 		return peaoPassante;
+	}
+	
+	public PecaXadrez getPromocao() {
+		return promocao;
 	}
 	
 	
@@ -180,7 +187,6 @@ public class PartidaXadrez {
 		validarPosicaoDestino(origem, destino);
 		Peca capturarPeca = fazerMovimento(origem, destino);
 		
-		
 		/*
 		 * Quando eu executo o movimento
 		 * e capturo a peça
@@ -209,6 +215,30 @@ public class PartidaXadrez {
 		
 		
 		/***********************************/
+		/**************************************/
+		 /* Movimento Especial - Promoção.
+		  * 
+		  * vou jogar na variavel promocao o valor nulo
+		  * para assegurar que eu to fazendo um novo teste.
+		  * 
+		  * Se a peca que foi movida ela foi uma instancia de Peao.
+		  * Ai eu vou testar, será que chegou no final?
+		  * 
+		  */
+		promocao = null;
+		if(pecaMovida instanceof Peao) {
+			if((pecaMovida.getColor() == Color.WHITE && destino.getLinha() == 0 || (pecaMovida.getColor() == Color.BLACK && destino.getLinha() == 7) )) {
+				/*
+				 * Se uma das peça movida chegar no final da linha.
+				 * PRIMEIRO EU JOGO O PEÃO, DEPOIS FAÇO A TROCA.
+				 */
+				promocao = (PecaXadrez)tabuleiro.peca(destino);
+				/*Trocando por uma peça poderosa, vou botar Rainha
+				 * Mas depois o usuário vai poder escolher outra peça. */
+				promocao = substituirPecaPrometida("R");
+			}
+		}
+		
 		
 		
 		
@@ -286,6 +316,69 @@ public class PartidaXadrez {
 		 * E estou convertendo para PecaXadrez  */
 		return (PecaXadrez)capturarPeca;
 	}
+	
+	/***************************************/
+	/*
+	 * Esse metodo vai ser chamado de novo
+	 * quando o usuário fizer a escolha da peça.
+	 */
+	public PecaXadrez substituirPecaPrometida(String tipo) {
+		//Programação defensiva.
+		if (promocao == null) {
+			throw new IllegalStateException("Não há peça para ser promovida.");
+		}
+		/*
+		 * Fazer a validação do argumento que foi passado
+		 * Para os tipos que são Rainha, Cavalo, Torre..
+		 * 
+		 * Se o tipo, não for igual a letra "C"
+		 * 
+		 * Comparar se um String é igual a outro
+		 * eu utilizo o equals
+		 * 
+		 * Pois o String é um tipo Classe e não primitivo.
+		 * 
+		 */
+		if(!tipo.equals("C") && !tipo.equals("R") && !tipo.equals("T") && !tipo.equals("B")) {
+			throw new InvalidParameterException("Tipo invalido dessa promoção");
+		}
+		
+		//Pegando a peça que está na posição
+		Posicao pos = promocao.getPosicaoXadrez().toPosicao();
+		//E removendo ela do tabuleiro.
+		Peca p = tabuleiro.removaPeca(pos);
+		//Agora vou excluir ele da lista.
+		pecasNoTabuleiro.remove(p);
+		//Instanciei a nova peça do metodo que criei nova peça
+		PecaXadrez novaPeca = novaPeca(tipo, promocao.getColor());
+		//Colocando a nova peça no lugar da peça promovida que é a POS
+		tabuleiro.colocarPeca(novaPeca, pos);
+		//Na lista vou adicionar essa nova peça.
+		pecasNoTabuleiro.add(novaPeca);
+		//E vou retornar essa nova peça que instanciei.
+		return novaPeca;
+		
+	}
+	
+	/*
+	 * Criando um metodo auxiliar para a PROMOÇÃO.
+	 */
+	private PecaXadrez novaPeca(String tipo, Color color) {
+		if(tipo.equals("B")) {
+			return new Bispo(tabuleiro, color);
+		}
+		if(tipo.equals("C")) {
+			return new Cavalo(tabuleiro, color);
+		}
+		if(tipo.equals("R")) {
+			return new Rainha(tabuleiro,color);
+		}
+	//Se falha todo mundo acima, ele retorna a torre.
+			return new Torre(tabuleiro, color);
+		
+	}
+	
+	
 	
 	private void validarPosicaoOrigem(Posicao posicao) {
 		/*

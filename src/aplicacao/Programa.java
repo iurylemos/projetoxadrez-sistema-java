@@ -94,6 +94,21 @@ public class Programa {
 					 */
 					capturadas.add(capturarPeca);
 				}
+				/*
+				 * Se nessa partida,a promoção for diferete de nulo
+				 * Significa que uma peça foi promovida
+				 * e assim vou pedir pro usuário digitar a peça escolhida.
+				 */
+				if(partidaXadrez.getPromocao() != null ) {
+					System.out.print("Digite a peca que deseja promover: (Cavalo, digite: 'C' // Bispo, digite: 'B' //Rainha, digite: 'R' // Torre, digite: 'T'): ");
+					String tipo = sc.nextLine();
+					//Agora vou chamar a partida e dizer qual é a substituição.
+					partidaXadrez.substituirPecaPrometida(tipo);
+				}
+				
+				
+				
+				
 			}catch(XadrezException e) {
 				/*
 				 * Vou fazer um tratamento básico
