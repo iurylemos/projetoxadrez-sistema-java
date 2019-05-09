@@ -24,6 +24,7 @@ public class PartidaXadrez {
 	private Tabuleiro tabuleiro;
 	private boolean check;
 	private boolean checkMate;
+	private PecaXadrez peaoPassante;
 	/*
 	 * Declarando as duas listas
 	 * no lugar de colocar na hora da declaração;
@@ -71,6 +72,10 @@ public class PartidaXadrez {
 	
 	public boolean getCheckMate() {
 		return checkMate;
+	}
+	
+	public PecaXadrez getPeaoPassante() {
+		return peaoPassante;
 	}
 	
 	
@@ -174,6 +179,8 @@ public class PartidaXadrez {
 		 */
 		validarPosicaoDestino(origem, destino);
 		Peca capturarPeca = fazerMovimento(origem, destino);
+		
+		
 		/*
 		 * Quando eu executo o movimento
 		 * e capturo a peça
@@ -191,6 +198,20 @@ public class PartidaXadrez {
 			desfazerMovimento(origem, destino, capturarPeca);
 			throw new XadrezException("Você não pode se colocar em cheque");
 		}
+		/***********************************/
+		/*
+		 * Realizando o peão passante.
+		 * 
+		 */
+		PecaXadrez pecaMovida = (PecaXadrez)tabuleiro.peca(destino);
+		
+		
+		
+		
+		/***********************************/
+		
+		
+		
 		/*
 		 * Se esse if falhar significa que o jogador
 		 * não se colocou em cheque
@@ -233,6 +254,31 @@ public class PartidaXadrez {
 		}else {
 			proximoTurno();
 		}
+		
+		// #Movimento Especial Peão Passante.
+		/*
+		 * Testar se a peça movida foi um peão
+		 * e se foram duas casas.
+		 * 
+		 * Testar se a PecaMovida é uma instancia
+		 * da classe Peao
+		 * E testar se ela andou duas casas.
+		 * (posicaoDeDestino.Linha ==  posicaoDeOrigem.Linha -2 
+		 * Ou então MAIS 2 que é das peças brancas
+		 */
+		if(pecaMovida instanceof Peao && (destino.getLinha() == origem.getLinha() -2 || destino.getLinha() == origem.getLinha() +2)) {
+			/*
+			 * Significa que foi uma peça peão que andou duas casas.
+			 */
+			peaoPassante = pecaMovida;
+		}else {
+			peaoPassante = null;
+		}
+		
+		
+		
+		
+		
 		/*Agora vou retornar a peça capturada. 
 		 * Vou ter que dar um downcasting antes
 		 * Por que?
@@ -457,6 +503,60 @@ public class PartidaXadrez {
 			torre.aumentarContagemMovimentos();
 		}
 		
+		/*********************************/
+		// #MovimentoEspecial Peão Passante.
+		/*
+		 * Peão passante
+		 * Vou testar se a peca que foi movida
+		 * é uma instancia de peão
+		 */
+	
+		if(peca instanceof Peao) {
+		/*
+		 * Um peão só pode andar na diagonal quando captura
+		 * Mas a diferença é que no peão passante
+		 * Ele só pode andar na diagonal, quando a casa estiver vázia
+		 * 
+		 * SE A POSIÇÃO DE ORIGEM FOR DIFERENTE DA POSIÇÃO DE DESTINO
+		 * SIGNIFICA QUE MUDOU DE COLUNA, ELE ANDOU NA DIAGONAL.
+		 * 
+		 * E A PEÇACAPTURADA = NULO
+		 * 
+		 * Ou seja se o meu peão andou na diagonal e não capturouPeca
+		 * significa que foi o PeãoPassante
+		 * 
+		 */
+			if(origem.getColuna() != destino.getColuna() && capturarPeca == null) {
+				Posicao posicaoPeao;
+				/*
+				 * Se a cor da peca que moveu
+				 * for igual a cor branca
+				 * significa que a peça que vai ser capturada
+				 * ela está em baixo do meu peão
+				 * 
+				 * Então vai ser na mesma posição dele
+				 * só que linha mais 1
+				 * 
+				 */
+				if(peca.getColor() == Color.WHITE) {
+					posicaoPeao = new Posicao(destino.getLinha() +1, destino.getColuna());
+					
+				}else {
+					posicaoPeao = new Posicao(destino.getLinha() -1, destino.getColuna());
+				}
+				/*
+				 * Vou falar então que a pecaCapturada 
+				 * vai ser a posicaoPeao.
+				 */
+				capturarPeca = tabuleiro.removaPeca(posicaoPeao);
+				//Adicionar na lista de peças capturadas
+				pecasCapturadas.add(capturarPeca);
+				//E removendo das peças do tabuleiro a peça capturada
+				pecasNoTabuleiro.remove(capturarPeca);
+			}
+			/*************************************/
+		}
+		
 		return capturarPeca;
 	}
 	
@@ -552,6 +652,67 @@ public class PartidaXadrez {
 			 */
 			torre.diminuirContagemMovimentos();
 		}
+		
+		
+		// #MovimentoEspecial Peão Passante.
+		/*
+		 * Peão passante
+		 * Vou testar se a peca que foi movida
+		 * é uma instancia de peão
+		 */
+	
+		if(peca instanceof Peao) {
+			/*
+			 * No lugar do nulo igual no fazendo movimento
+			 * eu coloco o peãoPassante
+			 * pois estou desfazendo
+			 */
+			if(origem.getColuna() != destino.getColuna() && pecaCapturada == peaoPassante) {
+				/*
+				 * No metodo desfazermovimento
+				 * quando eu desfaço a peça iria voltar para uma casa antes
+				 * Agora vou ter que implementar para ela voltar para a casa de origem.
+				 * 
+				 * Vou pegar a peça que foi devolvida que está no lugar erro
+				 * pois ela está uma casa antes, e não duas, como era a posição de origem.
+				 * e fazer manualmente ela voltar para lá.
+				 * 
+				 * Criar uma variavel peao e ela remove a peca do lugar errado
+				 */
+				PecaXadrez peao = (PecaXadrez)tabuleiro.removaPeca(destino);
+				Posicao posicaoPeao;
+				if(peca.getColor() == Color.WHITE) {
+					/*
+					 * Se foi a branca que foi capturada
+					 * e estou desfazendo o movimento, pois deixou em cheque
+					 * vou voltar essa peca para a linha onde ela deveria está
+					 * que é na 3
+					 * 
+					 * E na peça preta é na 4.
+					 */
+					posicaoPeao = new Posicao(3, destino.getColuna());
+					
+				}else {
+					posicaoPeao = new Posicao(4, destino.getColuna());
+				}
+				/*
+				 * Vou pegar esse peão que tava no lugar erro
+				 * e atribuir para o posicaoPeao.
+				 */
+				tabuleiro.colocarPeca(peao, posicaoPeao);
+				/*
+				 * E eu não preciso realizar a troca de listas
+				 * igual eu fiz no fazerMovimento.
+				 * pois já foi feita no primeiro if que a peca foi capturada
+				 * O MEU ALGORITMO GENÉRICO JÁ TROCOU DE LISTAS
+				 * A MINHA PEÇA CAPTURADA.
+				 */
+				
+			}
+			/*************************************/
+		}
+		
+		
 	}
 	
 	
@@ -882,14 +1043,18 @@ public class PartidaXadrez {
 		colocarNovaPeca('f', 1, new Bispo(tabuleiro, Color.WHITE));
 		colocarNovaPeca('g', 1, new Cavalo(tabuleiro, Color.WHITE));
 		colocarNovaPeca('h', 1, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('a', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('b', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('c', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('d', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('e', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('f', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('g', 2, new Peao(tabuleiro, Color.WHITE));
-		colocarNovaPeca('h', 2, new Peao(tabuleiro, Color.WHITE));
+		/*
+		 * Como o peão agora tem a parte do peão passante
+		 * O construtor dele aumentou
+		 */
+		colocarNovaPeca('a', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('b', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('c', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('d', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('e', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('f', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('g', 2, new Peao(tabuleiro, Color.WHITE, this));
+		colocarNovaPeca('h', 2, new Peao(tabuleiro, Color.WHITE, this));
 		
 
 		colocarNovaPeca('a', 8, new Torre(tabuleiro, Color.BLACK));
@@ -904,14 +1069,14 @@ public class PartidaXadrez {
 		colocarNovaPeca('f', 8, new Bispo(tabuleiro, Color.BLACK));
 		colocarNovaPeca('g', 8, new Cavalo(tabuleiro, Color.BLACK));
 		colocarNovaPeca('h', 8, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('a', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('b', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('c', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('d', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('e', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('f', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('g', 7, new Peao(tabuleiro, Color.BLACK));
-		colocarNovaPeca('h', 7, new Peao(tabuleiro, Color.BLACK));
+		colocarNovaPeca('a', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('b', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('c', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('d', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('e', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('f', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('g', 7, new Peao(tabuleiro, Color.BLACK, this));
+		colocarNovaPeca('h', 7, new Peao(tabuleiro, Color.BLACK, this));
 	}
 	
 	

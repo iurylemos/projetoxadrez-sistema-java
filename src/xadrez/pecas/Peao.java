@@ -3,18 +3,25 @@ package xadrez.pecas;
 import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
 import xadrez.Color;
+import xadrez.PartidaXadrez;
 import xadrez.PecaXadrez;
 
 public class Peao extends PecaXadrez {
+	
+	/*
+	 * Incluindo o partida Xadrez
+	 * para implementar o peão passante.
+	 */
+	private PartidaXadrez partidaXadrez;
 	
 	public String toString() {
 		return "P";
 	}
 	
 
-	public Peao(Tabuleiro tabuleiro, Color color) {
+	public Peao(Tabuleiro tabuleiro, Color color, PartidaXadrez partidaXadrez) {
 		super(tabuleiro, color);
-		// TODO Auto-generated constructor stub
+		this.partidaXadrez = partidaXadrez;
 	}
 
 	@Override
@@ -94,6 +101,55 @@ public class Peao extends PecaXadrez {
 				 */
 				mat[p.getLinha()][p.getColuna()] = true;
 			}
+			/****************************************
+			 * **********************************
+			 */
+			// #Movimento especial, peão passante BRANCO
+			/*
+			 * Verificando se o peão pode comer de lado
+			 * quando a peça adversária realizar dois
+			 * pulo de peão
+			 * Só posso realizar o passante
+			 * da peça branca para negra, quando
+			 * tiver na linha 5, na matriz ela é a linha 3
+			 * 
+			 * Se a posição da minha peça estiver na linha 3
+			 */
+			if(posicao.getLinha() == 3) {
+				/*
+				 * Verificando se tem um peão a esquerda
+				 * Criando um objeto que esteja nessa posição
+				 */
+				Posicao esquerda = new Posicao(posicao.getLinha(), posicao.getColuna() -1);
+				/*
+				 * Estou testando se posicao existe, se existe uma peça adversária lá
+				 * e se a peça que está lá é a peça que está vunerável
+				 * que é o peão passante.
+				 */
+				if (getTabuleiro().posicaoExiste(esquerda) && existePecaAdversaria(esquerda) && getTabuleiro().peca(esquerda) == partidaXadrez.getPeaoPassante() ) {
+					/*
+					 * Se isso for o caso vou dizer que o meu peão
+					 * pode capturar essa peça na esquerda.
+					 * Mas ele não vai ir para a posição que ele está
+					 * ele vai para a posição da mesma coluna, mas uma linha acima.
+					 * 
+					 * Vou criar uma matriz
+					 * e nessa matriz, vai ser possível o meu peão se mover para lá.
+					 */
+					mat[esquerda.getLinha() - 1][esquerda.getColuna()] = true;
+				}
+				/************************************/
+				Posicao direita = new Posicao(posicao.getLinha(), posicao.getColuna() +1);
+				
+				if (getTabuleiro().posicaoExiste(direita) && existePecaAdversaria(direita) && getTabuleiro().peca(direita) == partidaXadrez.getPeaoPassante() ) {
+					
+					mat[direita.getLinha() - 1][direita.getColuna()] = true;
+				}
+				/*********************************/
+			}
+			
+			
+			
 			/**************************************************************/
 			/******************** PEÃO NEGRO ******************************************/
 			/**************************************************************/
@@ -175,6 +231,50 @@ public class Peao extends PecaXadrez {
 				 * Significa que eu posso ir para essa casa
 				 */
 				mat[p.getLinha()][p.getColuna()] = true;
+			}
+			/**************************************/
+			// #Movimento especial, peão passante PRETO
+			/*
+			 * Verificando se o peão pode comer de lado
+			 * quando a peça adversária realizar dois
+			 * pulo de peão
+			 * Só posso realizar o passante
+			 * da peça branca para negra, quando
+			 * tiver na linha 4, na matriz ela é a linha 3
+			 * 
+			 * Se a posição da minha peça estiver na linha 3
+			 */
+			if(posicao.getLinha() == 4) {
+				/*
+				 * Verificando se tem um peão a esquerda
+				 * Criando um objeto que esteja nessa posição
+				 */
+				Posicao esquerda = new Posicao(posicao.getLinha(), posicao.getColuna() -1);
+				/*
+				 * Estou testando se posicao existe, se existe uma peça adversária lá
+				 * e se a peça que está lá é a peça que está vunerável
+				 * que é o peão passante.
+				 */
+				if (getTabuleiro().posicaoExiste(esquerda) && existePecaAdversaria(esquerda) && getTabuleiro().peca(esquerda) == partidaXadrez.getPeaoPassante() ) {
+					/*
+					 * Se isso for o caso vou dizer que o meu peão
+					 * pode capturar essa peça na esquerda.
+					 * Mas ele não vai ir para a posição que ele está
+					 * ele vai para a posição da mesma coluna, mas uma linha acima.
+					 * 
+					 * Vou criar uma matriz
+					 * e nessa matriz, vai ser possível o meu peão se mover para lá.
+					 */
+					mat[esquerda.getLinha() + 1][esquerda.getColuna()] = true;
+				}
+				/************************************/
+				Posicao direita = new Posicao(posicao.getLinha(), posicao.getColuna() +1);
+				
+				if (getTabuleiro().posicaoExiste(direita) && existePecaAdversaria(esquerda) && getTabuleiro().peca(direita) == partidaXadrez.getPeaoPassante() ) {
+					
+					mat[direita.getLinha() + 1][direita.getColuna()] = true;
+				}
+				/*********************************/
 			}
 		}
 		
