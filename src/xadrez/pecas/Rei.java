@@ -3,13 +3,55 @@ package xadrez.pecas;
 import camada.tabuleiro.Posicao;
 import camada.tabuleiro.Tabuleiro;
 import xadrez.Color;
+import xadrez.PartidaXadrez;
 import xadrez.PecaXadrez;
 
 public class Rei extends PecaXadrez {
+	
+	/*
+	 * Implementando o roque
+	 * uma depedencia para a partida
+	 */
+	private PartidaXadrez partidaXadrez;
 
-	public Rei(Tabuleiro tabuleiro, Color color) {
+	/*
+	 * E estou botando mais um argumento no construtor
+	 */
+	public Rei(Tabuleiro tabuleiro, Color color, PartidaXadrez partidaXadrez) {
 		super(tabuleiro, color);
+		this.partidaXadrez = partidaXadrez;
 	}
+	
+	/*
+	 * Vou criar um metodo auxiliar para ajudar
+	 * no roque
+	 */
+	
+	private boolean testeTorreRoque(Posicao posicao) {
+		/*
+		 * A itenção desse metodo é testar
+		 * se nessa posição que eu informar
+		 * existe torre, se essa torre
+		 * está apta para o roque
+		 * 
+		 * Vou declarar uma variavel p do tipo PecaXadrez
+		 * recebendo a Peca Xadrez do tabuleiro na peca
+		 * da posição informada
+		 * 
+		 * Ou seja peguei a peça que está nessa posição aqui
+		 * 
+		 */
+		PecaXadrez p = (PecaXadrez)getTabuleiro().peca(posicao);
+		/*
+		 * Vou testar se essa peça é diferente de nula
+		 * se essa peça é uma torre 
+		 * E se a cor dessa torre é igual a cor do meu rei
+		 * e se a contagem dos movimentos é igual a ZERO
+		 */
+		return p != null && p instanceof Torre && p.getColor() == getColor() && p.getContagemMovimentos() == 0;
+	}
+	
+	
 
 	@Override
 	public String toString() {
@@ -135,6 +177,97 @@ public class Rei extends PecaXadrez {
 		if(getTabuleiro().posicaoExiste(p) && podeMover(p)) {
 			mat[p.getLinha()][p.getColuna()] = true;
 		}
+		
+		/*****************************************/
+		// #Jogada Especial de Roque
+		/*
+		 * Se a contagem de movimentos do rei é igual a ZERO
+		 * E se a partida não está em cheque para o meu rei
+		 */
+		if(getContagemMovimentos() == 0 && !partidaXadrez.getCheck()) {
+			// #MovimentoEspecial RoquePequeno Rei e a Torre
+			/*
+			 * Vou primeiro pegar a posição da Torre 1
+			 * Que é a do canto direito
+			 * E já que a torre fica a 3 posições do lado direito do rei
+			 * vou passar pro construtor da posição 
+			 * a posição e a coluna do rei
+			 * só que a coluna coloco mais 3, pois ai é a torre.
+			 */
+			Posicao posT1 = new Posicao(posicao.getLinha(), posicao.getColuna() + 3);
+			/*
+			 * Vou testar se nessa posição tem uma torre lá
+			 * que está disponivel para o roque
+			 */
+			if (testeTorreRoque(posT1)) {
+				/*
+				 * Testar se as duas casas estão vazias
+				 * Vou criar um objeto p1, para verificar
+				 * se a casa do lado direito está disponível
+				 */
+				Posicao p1 = new Posicao(posicao.getLinha(), posicao.getColuna() +1);
+				Posicao p2 = new Posicao(posicao.getLinha(), posicao.getColuna() +2);
+				/*
+				 * Peguei as posições e vou testar
+				 * SE no TABULEIRO a PECA p1 e p2
+				 * for igual a nulo, ou seja não tem peça lá
+				 */
+				if(getTabuleiro().peca(p1) == null && getTabuleiro().peca(p2) == null) {
+					/*
+					 * Se isso ocorrer, é por que posso fazer o rock
+					 * Vou criar a matriz e passar o rei para lá.
+					 */
+					mat[posicao.getLinha()][posicao.getColuna() + 2] = true;
+				}
+			}
+		}
+		
+		
+		/*****************************************/
+		// #Jogada Especial de Roque Grande
+		/*
+		 * Se a contagem de movimentos do rei é igual a ZERO
+		 * E se a partida não está em cheque para o meu rei
+		 */
+		if(getContagemMovimentos() == 0 && !partidaXadrez.getCheck()) {
+			// #MovimentoEspecial RoquePequeno Rei e a Torre
+			/*
+			 * Vou primeiro pegar a posição da Torre 1
+			 * Que é a do canto direito
+			 * E já que a torre fica a 3 posições do lado direito do rei
+			 * vou passar pro construtor da posição 
+			 * a posição e a coluna do rei
+			 * só que a coluna coloco mais 3, pois ai é a torre.
+			 */
+			Posicao posT1 = new Posicao(posicao.getLinha(), posicao.getColuna() - 4);
+			/*
+			 * Vou testar se nessa posição tem uma torre lá
+			 * que está disponivel para o roque
+			 */
+			if (testeTorreRoque(posT1)) {
+				/*
+				 * Testar se as duas casas estão vazias
+				 * Vou criar um objeto p1, para verificar
+				 * se a casa do lado direito está disponível
+				 */
+				Posicao p1 = new Posicao(posicao.getLinha(), posicao.getColuna() -1);
+				Posicao p2 = new Posicao(posicao.getLinha(), posicao.getColuna() -2);
+				Posicao p3 = new Posicao(posicao.getLinha(), posicao.getColuna() -3);
+				/*
+				 * Peguei as posições e vou testar
+				 * SE no TABULEIRO a PECA p1 e p2
+				 * for igual a nulo, ou seja não tem peça lá
+				 */
+				if(getTabuleiro().peca(p1) == null && getTabuleiro().peca(p2) == null && getTabuleiro().peca(p3) == null) {
+					/*
+					 * Se isso ocorrer, é por que posso fazer o rock
+					 * Vou criar a matriz e passar o rei para lá.
+					 */
+					mat[posicao.getLinha()][posicao.getColuna() - 2] = true;
+				}
+			}
+		}
+		
 		
 		return mat;
 	}

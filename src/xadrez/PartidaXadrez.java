@@ -367,6 +367,96 @@ public class PartidaXadrez {
 			 */
 			pecasCapturadas.add(capturarPeca);
 		}
+		/****************************************/
+		// # Movimentação ESPECIAL Roque Pequeno
+		/*
+		 * Se a PECA p que foi movida
+		 * for uma instancia de Rei, 
+		 * e também a posição de destino
+		 * na coluna, for igual a posição de origem
+		 * na coluna + 2, significa que o meu REI
+		 * andou duas casas para a direita
+		 * fazendo o roque pequeno
+		 */
+		if(peca instanceof Rei && destino.getColuna() == origem.getColuna() + 2) {
+			/*
+			 * Fazendo a torre ir para a direita
+			 * Vou pegar a torre que está a 3 colunas do REI
+			 * e passar ela a duas a direita.
+			 * Vou criar um objeto auxiliar de Posicao
+			 * Posicao De Origem da torre
+			 * no parametro da Instancia
+			 * vai receber a mesma linha do rei
+			 * e a origem da torre 
+			 */
+			Posicao origemT = new Posicao(origem.getLinha(), origem.getColuna() + 3);
+			/*
+			 * Vou criar um outro objeto auxiliar
+			 * para dizer o destino da torre.
+			 * Ela vai ser a mesma posição do rei
+			 * só que uma coluna para a direita.
+			 */
+			Posicao destinoT = new Posicao(origem.getLinha(), origem.getColuna() + 1);
+			/*
+			 * Criando uma variavel torre do tipo peça xadrez
+			 * que ela remove a peça de destino do tabuleiro
+			 */
+			PecaXadrez torre = (PecaXadrez)tabuleiro.removaPeca(origemT);
+			/*
+			 * E coloca a peça na posicao de destino
+			 */
+			tabuleiro.colocarPeca(torre, destinoT);
+			/*
+			 * E incremento a quantindade de movimentos dela.
+			 */
+			torre.aumentarContagemMovimentos();
+		}
+		
+		/****************************************/
+		// # Movimentação ESPECIAL Roque GRANDE
+		/*
+		 * Se a PECA p que foi movida
+		 * for uma instancia de Rei, 
+		 * e também a posição de destino
+		 * na coluna, for igual a posição de origem
+		 * na coluna + 2, significa que o meu REI
+		 * andou duas casas para a direita
+		 * fazendo o roque pequeno
+		 */
+		if(peca instanceof Rei && destino.getColuna() == origem.getColuna() - 2 ) {
+			/*
+			 * Fazendo a torre ir para a direita
+			 * Vou pegar a torre que está a 3 colunas do REI
+			 * e passar ela a duas a direita.
+			 * Vou criar um objeto auxiliar de Posicao
+			 * Posicao De Origem da torre
+			 * no parametro da Instancia
+			 * vai receber a mesma linha do rei
+			 * e a origem da torre 
+			 */
+			Posicao origemT = new Posicao(origem.getLinha(), origem.getColuna() - 4);
+			/*
+			 * Vou criar um outro objeto auxiliar
+			 * para dizer o destino da torre.
+			 * Ela vai ser a mesma posição do rei
+			 * só que uma coluna para a direita.
+			 */
+			Posicao destinoT = new Posicao(origem.getLinha(), origem.getColuna() - 1);
+			/*
+			 * Criando uma variavel torre do tipo peça xadrez
+			 * que ela remove a peça de destino do tabuleiro
+			 */
+			PecaXadrez torre = (PecaXadrez)tabuleiro.removaPeca(origemT);
+			/*
+			 * E coloca a peça no destino
+			 */
+			tabuleiro.colocarPeca(torre, destinoT);
+			/*
+			 * E incremento a quantindade de movimentos dela.
+			 */
+			torre.aumentarContagemMovimentos();
+		}
+		
 		return capturarPeca;
 	}
 	
@@ -412,7 +502,58 @@ public class PartidaXadrez {
 			pecasCapturadas.remove(pecaCapturada);
 			pecasNoTabuleiro.add(pecaCapturada);
 		}
+		/****************************************/
+		// # Desfazendo Movimentação ESPECIAL Roque Pequeno
+		
+		if(peca instanceof Rei && destino.getColuna() == origem.getColuna() +2 ) {
+			
+			Posicao origemT = new Posicao(origem.getLinha(), origem.getColuna() + 3);
+			
+			Posicao destinoT = new Posicao(origem.getLinha(), origem.getColuna() + 1);
+			/*No fazendo movimento removi de origem e coloquei no destino
+			 * E aqui no desfazer movimento, vou tirar do destino, e colocar na origem
+			 * assim estou desfazendo. */
+			PecaXadrez torre = (PecaXadrez)tabuleiro.removaPeca(destinoT);
+			/*
+			 * E coloca a peça no destino de origem
+			 * já que está desfazendo movimento
+			 */
+			tabuleiro.colocarPeca(torre, origemT);
+			/*
+			 * E vou decrementar a quantindade de movimentos dela.
+			 */
+			torre.diminuirContagemMovimentos();
+		}
+		
+		/****************************************/
+		// # Desfazendo Movimentação ESPECIAL Roque GRANDE
+		/*
+		 * Se a PECA p que foi movida
+		 * for uma instancia de Rei, 
+		 * e também a posição de destino
+		 * na coluna, for igual a posição de origem
+		 * na coluna + 2, significa que o meu REI
+		 * andou duas casas para a direita
+		 * fazendo o roque pequeno
+		 */
+		if(peca instanceof Rei && destino.getColuna() == origem.getColuna() - 2 ) {
+			
+			Posicao origemT = new Posicao(origem.getLinha(), origem.getColuna() - 4);
+			
+			Posicao destinoT = new Posicao(origem.getLinha(), origem.getColuna() - 1);
+			
+			PecaXadrez torre = (PecaXadrez)tabuleiro.removaPeca(destinoT);
+			/*
+			 * E coloca a peça no destino
+			 */
+			tabuleiro.colocarPeca(torre, origemT);
+			/*
+			 * E incremento a quantindade de movimentos dela.
+			 */
+			torre.diminuirContagemMovimentos();
+		}
 	}
+	
 	
 	
 	
@@ -737,7 +878,7 @@ public class PartidaXadrez {
 		colocarNovaPeca('b', 1, new Cavalo(tabuleiro, Color.WHITE));
 		colocarNovaPeca('c', 1, new Bispo(tabuleiro, Color.WHITE));
 		colocarNovaPeca('d', 1, new Rainha(tabuleiro, Color.WHITE));
-		colocarNovaPeca('e', 1, new Rei(tabuleiro, Color.WHITE));
+		colocarNovaPeca('e', 1, new Rei(tabuleiro, Color.WHITE, this));
 		colocarNovaPeca('f', 1, new Bispo(tabuleiro, Color.WHITE));
 		colocarNovaPeca('g', 1, new Cavalo(tabuleiro, Color.WHITE));
 		colocarNovaPeca('h', 1, new Torre(tabuleiro, Color.WHITE));
@@ -755,7 +896,11 @@ public class PartidaXadrez {
 		colocarNovaPeca('b', 8, new Cavalo(tabuleiro, Color.BLACK));
 		colocarNovaPeca('c', 8, new Bispo(tabuleiro, Color.BLACK));
 		colocarNovaPeca('d', 8, new Rainha(tabuleiro, Color.BLACK));
-		colocarNovaPeca('e', 8, new Rei(tabuleiro, Color.BLACK));
+		/*No construtor do rei são 3 parametros por que tem o roque
+		 * Abaixo vou ter que colocar o this, referenciando a partida
+		 * Que é essa partida, então eu coloco só o THIS
+		 * Que no caso é a AUTOREFERENCIA chamada de THIS */
+		colocarNovaPeca('e', 8, new Rei(tabuleiro, Color.BLACK, this));
 		colocarNovaPeca('f', 8, new Bispo(tabuleiro, Color.BLACK));
 		colocarNovaPeca('g', 8, new Cavalo(tabuleiro, Color.BLACK));
 		colocarNovaPeca('h', 8, new Torre(tabuleiro, Color.BLACK));
